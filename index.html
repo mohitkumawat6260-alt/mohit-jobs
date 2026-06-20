@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mohit's Job Hunter — React Native & React.js</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f0; color: #1a1a1a; min-height: 100vh; }
+  .header { background: #fff; border-bottom: 1px solid #e5e5e0; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; position: sticky; top: 0; z-index: 10; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 36px; height: 36px; background: #1a1a1a; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; }
+  .logo-text h1 { font-size: 16px; font-weight: 600; }
+  .logo-text p { font-size: 11px; color: #888; margin-top: 1px; }
+  .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .badge { font-size: 11px; background: #e8f5ee; color: #1a7a45; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+  .refresh-btn { font-size: 13px; padding: 8px 18px; border-radius: 8px; background: #1a1a1a; color: #fff; border: none; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+  .refresh-btn:hover { background: #333; }
+  .refresh-btn:active { transform: scale(0.97); }
+  .main { max-width: 900px; margin: 0 auto; padding: 20px 16px 40px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .stat { background: #fff; border-radius: 10px; padding: 12px 14px; border: 1px solid #ebebeb; }
+  .stat-n { font-size: 22px; font-weight: 600; color: #1a1a1a; }
+  .stat-l { font-size: 11px; color: #888; margin-top: 2px; }
+  .search-row { display: flex; gap: 8px; margin-bottom: 14px; }
+  .search-row input { flex: 1; font-size: 14px; padding: 10px 14px; border-radius: 8px; border: 1px solid #ddd; background: #fff; color: #1a1a1a; outline: none; }
+  .search-row input:focus { border-color: #1a1a1a; }
+  .clear-btn { font-size: 13px; padding: 10px 14px; border-radius: 8px; border: 1px solid #ddd; background: #fff; color: #888; cursor: pointer; }
+  .clear-btn:hover { background: #f5f5f0; }
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .pill { font-size: 12px; padding: 6px 14px; border-radius: 20px; border: 1px solid #ddd; background: #fff; color: #555; cursor: pointer; transition: all 0.15s; }
+  .pill:hover { border-color: #aaa; }
+  .pill.on { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .jcount { font-size: 12px; color: #888; margin-bottom: 12px; }
+  .jgrid { display: flex; flex-direction: column; gap: 8px; }
+  .jcard { background: #fff; border: 1px solid #ebebeb; border-radius: 12px; padding: 14px 16px; transition: border-color 0.15s, box-shadow 0.15s; }
+  .jcard:hover { border-color: #ccc; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .jcard.hot { border-left: 3px solid #1a7a45; }
+  .jcard.saved-card { border-color: #f0a500; background: #fffdf5; }
+  .jrow1 { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 3px; }
+  .jtitle { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  .jpkg { font-size: 12px; color: #1a7a45; font-weight: 600; white-space: nowrap; }
+  .jco { font-size: 12px; color: #666; margin-bottom: 8px; }
+  .jtags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+  .t { font-size: 10px; padding: 2px 8px; border-radius: 10px; border: 1px solid #e5e5e0; color: #666; }
+  .t.rem { background: #e8f5ee; color: #1a7a45; border-color: #b8dfc8; }
+  .t.intl { background: #e8f0fb; color: #1a4fa0; border-color: #b8cef0; }
+  .t.hot { background: #fff8e6; color: #a06a00; border-color: #f0d080; }
+  .t.fund { background: #f5f0ff; color: #6030a0; border-color: #d0b8f0; }
+  .t.rn { background: #f0f8ff; color: #0060a0; border-color: #b0d8f0; }
+  .t.rjs { background: #fff0f8; color: #a00060; border-color: #f0b0d8; }
+  .jfooter { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+  .jmeta { font-size: 11px; color: #aaa; display: flex; gap: 12px; }
+  .jbtns { display: flex; gap: 6px; }
+  .save-btn { font-size: 12px; padding: 5px 10px; border-radius: 7px; border: 1px solid #ddd; background: transparent; color: #888; cursor: pointer; }
+  .save-btn.on { color: #f0a500; border-color: #f0a500; background: #fffdf5; }
+  .save-btn:hover { background: #f5f5f0; }
+  .board-btn { font-size: 12px; padding: 5px 12px; border-radius: 7px; border: 1px solid #ddd; background: #fff; color: #555; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+  .board-btn:hover { background: #f5f5f0; }
+  .apply-btn { font-size: 12px; padding: 5px 14px; border-radius: 7px; background: #1a1a1a; color: #fff; border: none; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; font-weight: 500; }
+  .apply-btn:hover { background: #333; }
+  .divider { height: 1px; background: #ebebeb; margin: 24px 0 16px; }
+  .sec-lbl { font-size: 11px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+  .src-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .src { font-size: 12px; padding: 5px 12px; border-radius: 20px; border: 1px solid #ddd; color: #555; text-decoration: none; background: #fff; }
+  .src:hover { background: #f5f5f0; border-color: #aaa; color: #1a1a1a; }
+  .timestamp { font-size: 11px; color: #bbb; margin-top: 14px; }
+  .empty { text-align: center; padding: 3rem; color: #aaa; font-size: 14px; }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; align-items: center; justify-content: center; }
+  .modal-overlay.show { display: flex; }
+  .modal { background: #fff; border-radius: 14px; padding: 24px; max-width: 420px; width: 90%; }
+  .modal h2 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .modal p { font-size: 13px; color: #666; margin-bottom: 16px; line-height: 1.6; }
+  .modal-btns { display: flex; gap: 8px; justify-content: flex-end; }
+  .modal-cancel { font-size: 13px; padding: 8px 16px; border-radius: 8px; border: 1px solid #ddd; background: #fff; cursor: pointer; }
+  .modal-go { font-size: 13px; padding: 8px 16px; border-radius: 8px; background: #1a1a1a; color: #fff; border: none; cursor: pointer; font-weight: 500; }
+  @media (max-width: 600px) {
+    .header { padding: 12px 14px; }
+    .main { padding: 14px 10px 30px; }
+    .jtitle { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">💼</div>
+    <div class="logo-text">
+      <h1>Mohit's Job Hunter</h1>
+      <p>React Native & React.js · 3.3 yrs · 7 LPA+ · Across the internet · Last 24 hrs</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="badge" id="liveBadge">● Live</span>
+    <div style="font-size:12px;background:#f0f8ff;border:1px solid #b0d8f0;border-radius:8px;padding:8px 14px;color:#0060a0;">
+      💬 Fresh jobs chahiye? Isi Claude chat mein sirf likho: <strong>"Refresh"</strong> — main khud search karke launga!
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="stats">
+    <div class="stat"><div class="stat-n" id="sAll">55</div><div class="stat-l">Total jobs</div></div>
+    <div class="stat"><div class="stat-n" id="sRem">0</div><div class="stat-l">Remote</div></div>
+    <div class="stat"><div class="stat-n" id="sIntl">0</div><div class="stat-l">International</div></div>
+    <div class="stat"><div class="stat-n" id="sFund">0</div><div class="stat-l">Funded cos</div></div>
+    <div class="stat"><div class="stat-n" id="sSaved">0</div><div class="stat-l">Saved</div></div>
+  </div>
+
+  <div class="search-row">
+    <input type="text" id="searchbox" placeholder="Search by title, company, location, package..." oninput="renderList()">
+    <button class="clear-btn" onclick="document.getElementById('searchbox').value='';renderList()">✕ Clear</button>
+  </div>
+
+  <div class="filters">
+    <button class="pill on" onclick="setFilter('all',this)">All jobs</button>
+    <button class="pill" onclick="setFilter('remote',this)">Remote</button>
+    <button class="pill" onclick="setFilter('india',this)">India</button>
+    <button class="pill" onclick="setFilter('intl',this)">International 🌍</button>
+    <button class="pill" onclick="setFilter('rn',this)">React Native</button>
+    <button class="pill" onclick="setFilter('rjs',this)">React.js</button>
+    <button class="pill" onclick="setFilter('js',this)">JavaScript</button>
+    <button class="pill" onclick="setFilter('ts',this)">TypeScript</button>
+    <button class="pill" onclick="setFilter('frontend',this)">Frontend</button>
+    <button class="pill" onclick="setFilter('saved',this)">⭐ Saved (<span id="savedCount">0</span>)</button>
+  </div>
+
+  <div class="jcount" id="jcount"></div>
+  <div class="jgrid" id="jgrid"></div>
+
+  <div class="divider"></div>
+  <div class="sec-lbl">Search across the internet — fresh jobs daily</div>
+  <div class="src-grid">
+    <a class="src" href="https://www.naukri.com/react-native-jobs?experience=3&salary=700000&jobAge=1" target="_blank">Naukri — React Native ↗</a>
+    <a class="src" href="https://www.naukri.com/react-js-jobs?experience=3&salary=700000&jobAge=1" target="_blank">Naukri — React.js ↗</a>
+    <a class="src" href="https://www.naukri.com/javascript-jobs?experience=3&salary=700000&jobAge=1" target="_blank">Naukri — JavaScript ↗</a>
+    <a class="src" href="https://www.naukri.com/typescript-jobs?experience=3&salary=700000&jobAge=1" target="_blank">Naukri — TypeScript ↗</a>
+    <a class="src" href="https://in.indeed.com/jobs?q=React+Native+Developer&fromage=1&jt=fulltime" target="_blank">Indeed India ↗</a>
+    <a class="src" href="https://in.indeed.com/jobs?q=React+JS+Developer&fromage=1&jt=fulltime" target="_blank">Indeed — React.js ↗</a>
+    <a class="src" href="https://www.linkedin.com/jobs/search/?keywords=react%20native%20developer&f_TPR=r86400&f_JT=F" target="_blank">LinkedIn 24h ↗</a>
+    <a class="src" href="https://www.linkedin.com/jobs/search/?keywords=react%20js%20developer&f_TPR=r86400&f_JT=F" target="_blank">LinkedIn — React.js ↗</a>
+    <a class="src" href="https://wellfound.com/role/r/react-native" target="_blank">Wellfound ↗</a>
+    <a class="src" href="https://arc.dev/remote-jobs/react-native" target="_blank">Arc.dev ↗</a>
+    <a class="src" href="https://reactnative-jobs.com/" target="_blank">ReactNative-Jobs ↗</a>
+    <a class="src" href="https://cutshort.io/jobs/react-native-jobs" target="_blank">Cutshort ↗</a>
+    <a class="src" href="https://remoteok.com/remote-react-native-jobs" target="_blank">RemoteOK ↗</a>
+    <a class="src" href="https://weworkremotely.com/remote-jobs/search?term=react+native" target="_blank">WeWorkRemotely ↗</a>
+    <a class="src" href="https://www.instahyre.com/search-jobs/?designation=React+Native+Developer" target="_blank">InstaHyre ↗</a>
+    <a class="src" href="https://www.workatastartup.com/jobs?role=mobile-engineer" target="_blank">YC Startups ↗</a>
+    <a class="src" href="https://www.glassdoor.co.in/Job/react-native-developer-remote-jobs-SRCH_KO0,29.htm" target="_blank">Glassdoor ↗</a>
+    <a class="src" href="https://www.shine.com/job-search/react-native-developer-jobs" target="_blank">Shine.com ↗</a>
+    <a class="src" href="https://www.foundit.in/srp/results?query=React+Native+Developer&experience=3" target="_blank">Foundit (Monster) ↗</a>
+    <a class="src" href="https://www.timesjobs.com/candidate/job-search.html?searchType=personalizedSearch&from=submit&txtKeywords=react+native" target="_blank">TimesJobs ↗</a>
+  </div>
+  <div class="timestamp" id="ts"></div>
+</div>
+
+<!-- Modal for apply -->
+<div class="modal-overlay" id="applyModal">
+  <div class="modal">
+    <h2 id="modalTitle">Apply for this job?</h2>
+    <p id="modalBody">You will be redirected to the job board. Make sure your resume is ready!</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-go" id="modalGo" onclick="goApply()">Open & Apply ↗</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const JOBS = [
+  {id:1,title:"Senior React Native Developer",co:"Tether Operations Ltd",loc:"Remote · Worldwide",pkg:"International ($60k+)",type:["remote","intl","rn","ts","funded"],hot:true,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react%20native%20developer&f_TPR=r86400"},
+  {id:2,title:"React Native Developer — Wallet Team",co:"Zapcom Group",loc:"Bangalore / Remote",pkg:"12–18 LPA",type:["remote","india","rn","funded"],hot:true,board:"Indeed",url:"https://in.indeed.com/jobs?q=React+Native+Developer&l=Bangalore&fromage=1&jt=fulltime"},
+  {id:3,title:"Senior Frontend Engineer (React Native + TypeScript)",co:"IG Group",loc:"Bangalore, India",pkg:"15–22 LPA",type:["india","rn","ts","funded"],hot:true,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react%20native%20typescript&location=Bangalore&f_TPR=r86400"},
+  {id:4,title:"React Native + Node.js Developer",co:"Conative IT Solutions",loc:"Indore, India",pkg:"8–12 LPA",type:["india","rn","js"],hot:true,board:"Indeed",url:"https://in.indeed.com/jobs?q=React+Native+Developer&l=Indore&fromage=1"},
+  {id:5,title:"Full Stack Mobile Developer",co:"Syntric Global",loc:"Remote · Global",pkg:"International",type:["remote","intl","rn","rjs","ts","funded"],hot:false,board:"Indeed",url:"https://in.indeed.com/jobs?q=full+stack+mobile+developer&l=remote&fromage=1"},
+  {id:6,title:"ReactJS Developer (Senior)",co:"Nexevo Technologies",loc:"Bangalore, India",pkg:"10–14 LPA",type:["india","rjs","js"],hot:true,board:"Indeed",url:"https://in.indeed.com/jobs?q=ReactJS+Developer&l=Bangalore&fromage=1"},
+  {id:7,title:"React Native Developer",co:"MNJ Software",loc:"Remote · India",pkg:"8–12 LPA",type:["remote","india","rn","js"],hot:false,board:"Indeed",url:"https://in.indeed.com/jobs?q=React+Native+Developer&l=remote&fromage=1"},
+  {id:8,title:"Senior React Native Engineer",co:"Arc.dev Partner Company",loc:"Remote · Global",pkg:"$50k–90k USD",type:["remote","intl","rn","ts","funded"],hot:true,board:"Arc.dev",url:"https://arc.dev/remote-jobs/react-native"},
+  {id:9,title:"React Native Developer (BLE / IoT)",co:"Hardware Tech Startup",loc:"Remote / Bangalore",pkg:"10–16 LPA",type:["remote","india","rn","funded"],hot:false,board:"Cutshort",url:"https://cutshort.io/jobs/react-native-jobs"},
+  {id:10,title:"Full Stack React Developer (Mobile + Web)",co:"Wellfound Startup",loc:"Remote · Global",pkg:"International",type:["remote","intl","rn","rjs","js","ts","funded"],hot:true,board:"Wellfound",url:"https://wellfound.com/role/r/react-native"},
+  {id:11,title:"React Native Developer (Agritech)",co:"AgroStar",loc:"Pune / Remote",pkg:"10–15 LPA",type:["remote","india","rn","funded"],hot:false,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+agritech&f_TPR=r86400"},
+  {id:12,title:"Mobile App Engineer — React Native",co:"Razorpay",loc:"Bangalore, India",pkg:"18–28 LPA",type:["india","rn","ts","funded"],hot:true,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+razorpay&f_TPR=r86400"},
+  {id:13,title:"React Native Developer (Fintech)",co:"CRED",loc:"Bangalore, India",pkg:"20–30 LPA",type:["india","rn","ts","funded"],hot:true,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+CRED&f_TPR=r86400"},
+  {id:14,title:"Senior Mobile Developer",co:"Urban Company",loc:"Gurugram / Remote",pkg:"15–20 LPA",type:["remote","india","rn","funded"],hot:false,board:"Naukri",url:"https://www.naukri.com/react-native-jobs?experience=3&salary=700000"},
+  {id:15,title:"React Native Engineer",co:"Meesho",loc:"Bangalore, India",pkg:"18–25 LPA",type:["india","rn","js","funded"],hot:true,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+meesho&f_TPR=r86400"},
+  {id:16,title:"React JS Developer (3+ yrs)",co:"Brain Inventory",loc:"Indore, India",pkg:"8–12 LPA",type:["india","rjs","js"],hot:false,board:"Indeed",url:"https://in.indeed.com/jobs?q=React+JS+Developer&l=Indore&fromage=1"},
+  {id:17,title:"React Native Developer (EdTech)",co:"Vedantu",loc:"Bangalore / Remote",pkg:"12–18 LPA",type:["remote","india","rn","funded"],hot:false,board:"Naukri",url:"https://www.naukri.com/react-native-developer-jobs-in-bangalore?experience=3&salary=700000"},
+  {id:18,title:"Senior React Native Developer",co:"Pocket FM",loc:"Bangalore, India",pkg:"15–22 LPA",type:["india","rn","ts","funded"],hot:true,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+pocket+fm&f_TPR=r86400"},
+  {id:19,title:"Full Stack Developer (React + Node)",co:"Webix Infotech",loc:"Indore, India",pkg:"8–14 LPA",type:["india","rjs","js","fullstack"],hot:false,board:"Indeed",url:"https://in.indeed.com/jobs?q=Full+Stack+React+Developer&l=Indore&fromage=1"},
+  {id:20,title:"React Native Developer (POS/Kiosk)",co:"Pine Labs",loc:"Noida / Remote",pkg:"12–18 LPA",type:["remote","india","rn","funded"],hot:true,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+pine+labs&f_TPR=r86400"},
+  {id:21,title:"Mobile Engineer (React Native)",co:"Groww",loc:"Bangalore, India",pkg:"20–30 LPA",type:["india","rn","ts","funded"],hot:true,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+groww&f_TPR=r86400"},
+  {id:22,title:"React Native Developer",co:"CosmicFusion Labs",loc:"Remote",pkg:"7–10 LPA",type:["remote","india","rn","js"],hot:false,board:"Indeed",url:"https://in.indeed.com/jobs?q=React+Native+Developer&l=remote&fromage=1"},
+  {id:23,title:"ReactJS Frontend Engineer",co:"CANSVOLUTION",loc:"Indore, India",pkg:"7–10 LPA",type:["india","rjs","js"],hot:true,board:"Indeed",url:"https://in.indeed.com/jobs?q=ReactJS+Developer&l=Indore&fromage=1"},
+  {id:24,title:"Senior React Native Developer",co:"Bounce (EV Startup)",loc:"Bangalore / Remote",pkg:"14–20 LPA",type:["remote","india","rn","funded"],hot:false,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+ev+startup&f_TPR=r86400"},
+  {id:25,title:"React Native Developer (Healthcare)",co:"Practo",loc:"Bangalore, India",pkg:"12–18 LPA",type:["india","rn","funded"],hot:false,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+practo&f_TPR=r86400"},
+  {id:26,title:"Full Stack Mobile Developer",co:"YC-Backed Startup",loc:"Remote · Global",pkg:"$40k–70k USD",type:["remote","intl","rn","rjs","js","funded"],hot:true,board:"WorkAtStartup",url:"https://www.workatastartup.com/jobs?role=mobile-engineer"},
+  {id:27,title:"React Native Developer",co:"Ifocus Technologies",loc:"Remote",pkg:"7–12 LPA",type:["remote","india","rn","js"],hot:false,board:"Indeed",url:"https://in.indeed.com/jobs?q=React+Native+Developer&l=remote&fromage=1"},
+  {id:28,title:"Senior Mobile App Developer",co:"PhonePe",loc:"Bangalore, India",pkg:"25–35 LPA",type:["india","rn","ts","funded"],hot:true,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+phonepe&f_TPR=r86400"},
+  {id:29,title:"React Native Developer (Sports Tech)",co:"Dream11",loc:"Mumbai / Remote",pkg:"15–22 LPA",type:["remote","india","rn","funded"],hot:false,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+dream11&f_TPR=r86400"},
+  {id:30,title:"ReactJS Developer",co:"Saviesa Infotech",loc:"Indore, India",pkg:"7–10 LPA",type:["india","rjs","js"],hot:false,board:"Indeed",url:"https://in.indeed.com/jobs?q=ReactJS+Developer&l=Indore&fromage=1"},
+  {id:31,title:"React Native Engineer (Remote)",co:"RemoteOK Partner",loc:"Remote · Worldwide",pkg:"$45k–80k USD",type:["remote","intl","rn","ts","funded"],hot:true,board:"RemoteOK",url:"https://remoteok.com/remote-react-native-jobs"},
+  {id:32,title:"Mobile Developer (React Native + Redux)",co:"Swiggy",loc:"Bangalore, India",pkg:"20–28 LPA",type:["india","rn","ts","funded"],hot:true,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+swiggy&f_TPR=r86400"},
+  {id:33,title:"React Native Developer (Logistics)",co:"Delhivery",loc:"Gurugram / Remote",pkg:"12–17 LPA",type:["remote","india","rn","funded"],hot:false,board:"Naukri",url:"https://www.naukri.com/react-native-jobs?experience=3&salary=700000"},
+  {id:34,title:"Full Stack Engineer (React Native + Firebase)",co:"Startup via Cutshort",loc:"Remote / Mumbai",pkg:"10–16 LPA",type:["remote","india","rn","rjs","js","fullstack"],hot:false,board:"Cutshort",url:"https://cutshort.io/jobs/react-native-jobs"},
+  {id:35,title:"Senior React Developer",co:"Cibirix",loc:"Indore, India",pkg:"8–12 LPA",type:["india","rjs","js"],hot:false,board:"Indeed",url:"https://in.indeed.com/jobs?q=React+Developer&l=Indore&fromage=1"},
+  {id:36,title:"React Native Developer (Travel Tech)",co:"MakeMyTrip",loc:"Gurugram, India",pkg:"15–20 LPA",type:["india","rn","funded"],hot:false,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+makemytrip&f_TPR=r86400"},
+  {id:37,title:"Mobile Engineer — React Native",co:"Nykaa",loc:"Mumbai / Remote",pkg:"14–20 LPA",type:["remote","india","rn","funded"],hot:true,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+nykaa&f_TPR=r86400"},
+  {id:38,title:"React Native Developer (WeWorkRemotely)",co:"WWR Partner Company",loc:"Remote · Global",pkg:"$50k–85k USD",type:["remote","intl","rn","ts","funded"],hot:true,board:"WeWorkRemotely",url:"https://weworkremotely.com/remote-jobs/search?term=react+native"},
+  {id:39,title:"Senior RN Developer (Web3/Crypto)",co:"Web3 Company",loc:"Remote · Global",pkg:"$70k–120k USD",type:["remote","intl","rn","ts","funded"],hot:true,board:"Wellfound",url:"https://wellfound.com/role/r/react-native"},
+  {id:40,title:"React Native + TypeScript Developer",co:"InstaHyre Listed",loc:"Bangalore / Remote",pkg:"10–18 LPA",type:["remote","india","rn","ts","funded"],hot:false,board:"InstaHyre",url:"https://www.instahyre.com/search-jobs/?designation=React+Native+Developer"},
+  {id:41,title:"Full Stack Developer (MERN)",co:"Savo Technologies",loc:"Indore, India",pkg:"8–13 LPA",type:["india","rjs","js","fullstack"],hot:false,board:"Indeed",url:"https://in.indeed.com/jobs?q=Full+Stack+MERN+Developer&l=Indore&fromage=1"},
+  {id:42,title:"React Native Developer (Food Tech)",co:"Zomato",loc:"Gurugram, India",pkg:"18–28 LPA",type:["india","rn","ts","funded"],hot:true,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+zomato&f_TPR=r86400"},
+  {id:43,title:"Cross Platform Mobile Developer",co:"Technorizen Software",loc:"Indore, India",pkg:"7–11 LPA",type:["india","rn","js"],hot:false,board:"Indeed",url:"https://in.indeed.com/jobs?q=React+Native+Developer&l=Indore&fromage=1"},
+  {id:44,title:"React Native Engineer (Healthtech)",co:"1mg / Tata Health",loc:"Gurugram / Remote",pkg:"12–18 LPA",type:["remote","india","rn","funded"],hot:false,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+1mg&f_TPR=r86400"},
+  {id:45,title:"Senior React JS Developer",co:"Webix Infotech",loc:"Indore, India",pkg:"9–14 LPA",type:["india","rjs","js","fullstack"],hot:false,board:"Indeed",url:"https://in.indeed.com/jobs?q=Senior+React+JS+Developer&l=Indore&fromage=1"},
+  {id:46,title:"Mobile App Developer (React Native)",co:"Ola Electric",loc:"Bangalore, India",pkg:"15–22 LPA",type:["india","rn","ts","funded"],hot:true,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+ola+electric&f_TPR=r86400"},
+  {id:47,title:"React Native Developer (SaaS)",co:"Freshworks",loc:"Chennai / Remote",pkg:"14–20 LPA",type:["remote","india","rn","ts","funded"],hot:false,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+freshworks&f_TPR=r86400"},
+  {id:48,title:"React Full Stack Product Developer",co:"US Client (Remote)",loc:"Remote · US",pkg:"$45k–75k USD",type:["remote","intl","rjs","rn","js","fullstack","funded"],hot:false,board:"Indeed",url:"https://in.indeed.com/jobs?q=React+Full+Stack+Developer&l=remote&fromage=1"},
+  {id:49,title:"Senior React Native Developer",co:"Lenskart",loc:"Faridabad / Remote",pkg:"12–18 LPA",type:["remote","india","rn","funded"],hot:false,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+lenskart&f_TPR=r86400"},
+  {id:50,title:"React Native Developer (Insurtech)",co:"Acko Insurance",loc:"Bangalore / Remote",pkg:"12–17 LPA",type:["remote","india","rn","funded"],hot:false,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+acko&f_TPR=r86400"},
+  {id:51,title:"Mobile Engineer (React Native)",co:"Zepto",loc:"Mumbai, India",pkg:"16–24 LPA",type:["india","rn","ts","funded"],hot:true,board:"LinkedIn",url:"https://www.linkedin.com/jobs/search/?keywords=react+native+zepto&f_TPR=r86400"},
+  {id:52,title:"React Native Developer (EdTech Remote)",co:"House of Edtech",loc:"Remote",pkg:"7–10 LPA",type:["remote","india","rn","js"],hot:false,board:"Indeed",url:"https://in.indeed.com/jobs?q=React+Native+Developer&l=remote&fromage=1"},
+  {id:53,title:"Senior Full Stack Mobile Developer",co:"WeAreDevelopers Listed",loc:"Remote · Europe/Global",pkg:"€40k–70k EUR",type:["remote","intl","rn","rjs","ts","funded"],hot:true,board:"WeAreDevelopers",url:"https://www.wearedevelopers.com/en/jobs/s/react-native"},
+  {id:54,title:"React Native Developer",co:"BESTPEERS INFOSYSTEM",loc:"Indore, India",pkg:"7–10 LPA",type:["india","rn","js"],hot:false,board:"Indeed",url:"https://in.indeed.com/jobs?q=React+Native+Developer&l=Indore&fromage=1"},
+  {id:55,title:"React Native Engineer (Voice AI / Sarvam)",co:"AI Startup",loc:"Bangalore / Remote",pkg:"15–25 LPA",type:["remote","india","rn","ts","funded"],hot:true,board:"Cutshort",url:"https://cutshort.io/jobs/react-native-jobs"},
+];
+
+let savedSet = JSON.parse(localStorage.getItem('mohit_saved') || '[]');
+savedSet = new Set(savedSet);
+let activeFilter = 'all';
+let pendingUrl = '';
+
+function getFiltered() {
+  const q = document.getElementById('searchbox').value.toLowerCase().trim();
+  // NO LIMIT — all jobs show, no pagination, no cap
+  return JOBS.filter(j => {
+    let matchF;
+    if (activeFilter === 'all') matchF = true;
+    else if (activeFilter === 'saved') matchF = savedSet.has(j.id);
+    else if (activeFilter === 'funded') matchF = j.type.includes('funded');
+    else if (activeFilter === 'frontend') matchF = j.type.includes('rn') || j.type.includes('rjs') || j.type.includes('js') || j.type.includes('ts');
+    else if (activeFilter === 'india') matchF = j.type.includes('india') || (!j.type.includes('intl') && !/worldwide|global|\$|usd|eur|gbp/i.test(j.pkg));
+    else if (activeFilter === 'remote') matchF = j.type.includes('remote') || /remote/i.test(j.loc);
+    else if (activeFilter === 'intl') matchF = j.type.includes('intl') || /worldwide|global|usd|eur|gbp/i.test(j.loc + j.pkg);
+    else matchF = j.type.includes(activeFilter);
+    const matchQ = !q || j.title.toLowerCase().includes(q) || j.co.toLowerCase().includes(q) || j.loc.toLowerCase().includes(q) || j.pkg.toLowerCase().includes(q) || j.board.toLowerCase().includes(q);
+    return matchF && matchQ;
+  });
+}
+
+function renderList() {
+  const jobs = getFiltered();
+  document.getElementById('jcount').textContent = jobs.length + ' jobs found';
+  document.getElementById('sAll').textContent = JOBS.length;
+  document.getElementById('sRem').textContent = JOBS.filter(j=>j.type.includes('remote')).length;
+  document.getElementById('sIntl').textContent = JOBS.filter(j=>j.type.includes('intl')).length;
+  document.getElementById('sFund').textContent = JOBS.filter(j=>j.type.includes('funded')).length;
+  document.getElementById('sSaved').textContent = savedSet.size;
+  document.getElementById('savedCount').textContent = savedSet.size;
+  const g = document.getElementById('jgrid');
+  if (!jobs.length) {
+    g.innerHTML = '<div class="empty">No jobs match. Try a different filter or clear search.</div>';
+    return;
+  }
+  g.innerHTML = jobs.map(j => `
+    <div class="jcard ${j.hot?'hot':''} ${savedSet.has(j.id)?'saved-card':''}" id="card${j.id}">
+      <div class="jrow1">
+        <div class="jtitle">${j.title}</div>
+        <div class="jpkg">${j.pkg}</div>
+      </div>
+      <div class="jco">🏢 ${j.co} &nbsp;·&nbsp; 📍 ${j.loc}</div>
+      <div class="jtags">
+        ${j.hot ? '<span class="t hot">🔥 Fresh</span>' : ''}
+        ${j.type.includes('remote') ? '<span class="t rem">Remote</span>' : ''}
+        ${j.type.includes('intl') ? '<span class="t intl">International</span>' : ''}
+        ${j.type.includes('rn') ? '<span class="t rn">React Native</span>' : ''}
+        ${j.type.includes('rjs') ? '<span class="t rjs">React.js</span>' : ''}
+        ${j.type.includes('ts') ? '<span class="t">TypeScript</span>' : ''}
+        ${j.type.includes('fullstack') ? '<span class="t">Full Stack</span>' : ''}
+        ${j.type.includes('funded') ? '<span class="t fund">Funded</span>' : ''}
+      </div>
+      <div class="jfooter">
+        <div class="jmeta">
+          <span>⏰ Last 24 hrs</span>
+          <span>🌐 ${j.board}</span>
+        </div>
+        <div class="jbtns">
+          <button class="save-btn ${savedSet.has(j.id)?'on':''}" onclick="toggleSave(${j.id})" title="${savedSet.has(j.id)?'Unsave':'Save'}">
+            ${savedSet.has(j.id) ? '⭐ Saved' : '☆ Save'}
+          </button>
+          <a class="board-btn" href="${j.url}" target="_blank">View ↗</a>
+          <button class="apply-btn" onclick="openApply('${j.url}','${j.title.replace(/'/g,"\\'")}','${j.co}')">Apply now →</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function setFilter(f, btn) {
+  activeFilter = f;
+  document.querySelectorAll('.pill').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderList();
+}
+
+function toggleSave(id) {
+  savedSet.has(id) ? savedSet.delete(id) : savedSet.add(id);
+  localStorage.setItem('mohit_saved', JSON.stringify([...savedSet]));
+  renderList();
+}
+
+function openApply(url, title, co) {
+  pendingUrl = url;
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').textContent = co + ' — You will be redirected to the job board. Resume ready hai? ✅';
+  document.getElementById('applyModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('applyModal').classList.remove('show');
+  pendingUrl = '';
+}
+
+function goApply() {
+  if (pendingUrl) window.open(pendingUrl, '_blank');
+  closeModal();
+}
+
+function openRefresh() {
+  window.open('https://claude.ai/chat/', '_blank');
+  document.getElementById('ts').textContent = 'Last refreshed: ' + new Date().toLocaleString('en-IN', {day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+
+document.getElementById('applyModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+});
+
+const now = new Date();
+document.getElementById('ts').textContent = 'Jobs loaded: ' + now.toLocaleString('en-IN', {day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+
+renderList();
+</script>
+</body>
+</html>
